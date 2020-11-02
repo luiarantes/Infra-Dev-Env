@@ -20,7 +20,7 @@ Sistema Operacional: **Ubuntu Server 20.04 LTS**
 ```
 $ sudo apt update
 $ sudo apt upgrade -y
-$ sudo apt install vim git apt-transport-https ca-certificates curl software-properties-common -y
+$ sudo apt install vim git apt-transport-https ca-certificates curl software-properties-common mysql-client-core-8.0 -y
 
 $ sudo shutdown -r now
 ```
@@ -33,8 +33,9 @@ $ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ub
 $ sudo apt update
 $ sudo apt install docker-ce -y
 $ sudo usermod -aG docker ${USER}
+$ exit
 ```
-Obs: Fazer logout e login novamente
+Obs: Fazer logout e login novamente para utilização do docker sem root
 
 ##### Instalando Docker Compose
 
@@ -73,12 +74,26 @@ $ cd ~
 $ sudo git clone https://github.com/luiarantes/PHP-MySql-HelloWorld.git
 $ sudo chown ${USER}:${USER} PHP-MySql-HelloWorld/ -R
 ```
-Obs: O diretório "PHP-MySql-HelloWorld" foi criado ao subir os containers pelo docker-compose, por isso foi necessário utilizar o sudo ao realizar o clone.
+Obs: O diretório "PHP-MySql-HelloWorld" foi criado ao subir os containers pelo docker-compose, por isso foi necessário utilizar o sudo ao realizar o clone, nele será possível programar localmente utilizando o editor favorito.
 
 ##### Criando arquivos de conexão com o banco de dados
 
 ```
-$ echo "<?php mysqli_connect("db", \"root\", \"mysql.rootp4ss\") or die(mysqli_error()); ?>" >> ~/PHP-MySql-HelloWorld/db.php
+$ echo "<?php \$HOST=\"db\"; \$USER=\"root\"; \$PASS=\"mysql.rootp4ss\"; \$DB=\"mysqldb\"; ?>" > ~/PHP-MySql-HelloWorld/db-vars.php
+```
+
+##### Conectando ao banco de dados, criando tabela e inserindo registros
+```
+$ docker exec -it docker-dev-env-php-mysql_db_1 mysql -u root -p
+Enter password: mysql.rootp4ss
+
+mysql> USE mysqldb;
+
+mysql> CREATE TABLE tabela (id int(11) NOT NULL AUTO_INCREMENT, coluna varchar(255) NOT NULL, PRIMARY KEY (id));
+
+mysql> INSERT INTO tabela (coluna) VALUES ('Hello World');
+
+mysql> exit
 ```
 
 ##### Acessando a aplicação
@@ -91,7 +106,7 @@ $ curl 127.0.0.1
 
 ```
 $ echo ".gitignore" > .gitignore
-$ echo "db.php" >> .gitignore
+$ echo "db-vars.php" >> .gitignore
 ```
 Obs: O arquivo de conexão do banco de dados será recriado ao realizar o deploy para produção
 
