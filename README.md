@@ -96,3 +96,6 @@ $ echo ".gitignore" > .gitignore
 $ echo "db.php" >> .gitignore
 ```
 Obs: O arquivo de conexão do banco de dados será recriado ao realizar o deploy para produção
+
+##### Link para continuidade de criação do ambiente de produção no Elastic Beanstalk
+[https://github.com/luiarantes/Infra-Prod-Env](https://github.com/luiarantes/Infra-Prod-Env)
